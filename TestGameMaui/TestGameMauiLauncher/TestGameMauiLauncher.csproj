@@ -66,4 +66,43 @@
 	  <ProjectReference Include="..\TestGameMaui\TestGameMaui.csproj" />
 	</ItemGroup>
 
+	<!-- Windows -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
+		<MonoGamePlatform>Windows</MonoGamePlatform>
+		<!-- or DesktopGL if you actually built DesktopGL -->
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+		<Content Include="..\TestGameMaui\Content\bin\$(MonoGamePlatform)\Content\**\*.*">
+			<!-- For loose debug run: puts files under ...\win10-x64\Content\ -->
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<!-- For packaged/debug deploy: puts files under ...\win10-x64\AppX\Content\ -->
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<!-- Ensures they live under a 'Content\' folder in both cases -->
+			<Link>Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+	</ItemGroup>
+
+
+	<!-- Android -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+		<MonoGamePlatform>Android</MonoGamePlatform>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+		<AndroidAsset Include="..\TestGameMaui\Content\bin\$(MonoGamePlatform)\Content\**\*.*"
+					  LogicalName="Content\%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<!-- iOS & MacCatalyst (reuse iOS content) -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-ios')) or $(TargetFramework.Contains('-maccatalyst'))">
+		<MonoGamePlatform>iOS</MonoGamePlatform>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-ios')) or $(TargetFramework.Contains('-maccatalyst'))">
+		<BundleResource Include="..\TestGameMaui\Content\bin\$(MonoGamePlatform)\Content\**\*.*">
+			<LogicalName>Content\%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+		</BundleResource>
+	</ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4" />
+		<!--<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4" />-->
 		
 		<!-- Package for Android only -->
 		<PackageReference Include="MonoGame.Framework.Android" Version="3.8.4" Condition="'$(TargetFramework)'=='net8.0-android'" />
@@ -37,6 +37,66 @@
 						  
 		<!-- Package for Mac only -->
 		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4" Condition="'$(TargetFramework)'=='net8.0-maccatalyst'" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<EnableMgcbInVs>false</EnableMgcbInVs>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(EnableMgcbInVs)' == 'true'">
+		<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(EnableMgcbInVs)' == 'true'">
+		<MonoGameContentReference Include="Content/Content.mgcb" />
+	</ItemGroup>
+
+	<!-- Android -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+		<MonoGamePlatform>Android</MonoGamePlatform>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+		<!-- MGCB default output layout: Content/bin/{Platform}/Content/** -->
+		<AndroidAsset Include="Content\bin\$(MonoGamePlatform)\Content\**\*.*"
+					  LogicalName="Content\%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<!-- Windows -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
+		<MonoGamePlatform>Windows</MonoGamePlatform>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+		<Content Include="Content\bin\$(MonoGamePlatform)\Content\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+	</ItemGroup>
+
+	<!-- iOS -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+		<!-- Build iOS-flavored content (OpenGLES profile for effects) -->
+		<MonoGamePlatform>iOS</MonoGamePlatform>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
+		<!-- Put compiled .xnb files into the app bundle at Content/... -->
+		<BundleResource Include="Content\bin\$(MonoGamePlatform)\Content\**\*.*">
+			<LogicalName>Content\%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+		</BundleResource>
+	</ItemGroup>
+
+	<!-- MacCatalyst -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-maccatalyst'))">
+		<!-- Reuse iOS content profile for MacCatalyst -->
+		<MonoGamePlatform>iOS</MonoGamePlatform>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-maccatalyst'))">
+		<BundleResource Include="Content\bin\$(MonoGamePlatform)\Content\**\*.*">
+			<LogicalName>Content\%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+		</BundleResource>
 	</ItemGroup>
 
 </Project>

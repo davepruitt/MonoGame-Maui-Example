@@ -8,9 +8,7 @@ using View = Android.Views.View;
 namespace TestGameMaui
 {
     [Activity(
-        Label = "@string/app_name",
         MainLauncher = true,
-        Icon = "@drawable/icon",
         AlwaysRetainTaskState = true,
         LaunchMode = LaunchMode.SingleInstance,
         ScreenOrientation = ScreenOrientation.FullUser,

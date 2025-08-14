@@ -18,8 +18,8 @@ namespace TestGameMaui
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _graphics.PreferredBackBufferWidth = 1440;
-            _graphics.PreferredBackBufferHeight = 900;
+            _graphics.PreferredBackBufferWidth = 2560; //1440;
+            _graphics.PreferredBackBufferHeight = 1600; //900;
         }
 
         protected override void Initialize()
@@ -33,7 +33,7 @@ namespace TestGameMaui
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            TestGameResources.LoadTextures(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -52,7 +52,9 @@ namespace TestGameMaui
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch?.Begin();
+            _spriteBatch?.Draw(TestGameResources.GreenBrickTexture, new Vector2(0, 0), Color.White);
+            _spriteBatch?.End();
 
             base.Draw(gameTime);
         }
